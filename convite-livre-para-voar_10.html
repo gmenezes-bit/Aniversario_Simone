@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aniversário de Simone Aguiar · Livre para Voar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { min-height: 100%; font-family: 'Cormorant Garamond', serif; overflow-x: hidden; }
+
+/* ════ TELA DE ENTRADA ════ */
+#entrada {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: linear-gradient(145deg, #2a0a3e 0%, #4a1570 40%, #7a2db0 75%, #c060d0 100%);
+  overflow: hidden; transition: opacity 0.9s ease, transform 0.9s ease;
+}
+#entrada.saindo { opacity: 0; transform: scale(1.04); pointer-events: none; }
+#entrada-canvas { position: absolute; inset: 0; pointer-events: none; }
+
+.entrada-content {
+  position: relative; z-index: 2; text-align: center; padding: 0 24px;
+  animation: fadeUpIn 1.2s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes fadeUpIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.entrada-nome {
+  font-weight: 300; font-style: italic; font-size: 14px; letter-spacing: 4px;
+  color: rgba(255,210,255,0.7); text-transform: uppercase; margin-bottom: 12px;
+  animation: fadeUpIn 1.2s 0.2s both;
+}
+.entrada-titulo {
+  font-family: 'Playfair Display', serif; font-weight: 700;
+  font-size: clamp(48px, 12vw, 78px); line-height: 1.0; color: #fff; margin-bottom: 8px;
+  animation: fadeUpIn 1.2s 0.35s both;
+}
+.entrada-titulo em { font-style: italic; color: #f0b0ff; }
+.entrada-sub {
+  font-size: 17px; font-weight: 300; font-style: italic;
+  color: rgba(255,220,255,0.65); margin-bottom: 56px;
+  animation: fadeUpIn 1.2s 0.5s both;
+}
+.btn-abrir {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.4);
+  border-radius: 60px; padding: 17px 44px;
+  font-family: 'Playfair Display', serif; font-size: 19px; font-style: italic;
+  color: #fff; cursor: pointer; backdrop-filter: blur(8px);
+  transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+  animation: fadeUpIn 1.2s 0.7s both, pulse 2.5s 2s ease-in-out infinite;
+  letter-spacing: 0.5px;
+}
+.btn-abrir:hover { background: rgba(255,255,255,0.2); transform: scale(1.06); box-shadow: 0 0 40px rgba(200,120,255,0.45); }
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(200,120,255,0.0); }
+  50%      { box-shadow: 0 0 30px 10px rgba(200,120,255,0.28); }
+}
+.btn-abrir svg { width: 24px; height: 18px; animation: flutterBtn 2.4s ease-in-out infinite; }
+@keyframes flutterBtn {
+  0%,100% { transform: rotate(-8deg) translateY(0); }
+  50%      { transform: rotate(8deg) translateY(-4px); }
+}
+.entrada-rodape {
+  position: absolute; bottom: 28px; font-size: 12px; font-style: italic;
+  color: rgba(255,200,255,0.38); letter-spacing: 2px;
+  animation: fadeUpIn 1.4s 1s both;
+}
+
+/* ════ CONVITE ════ */
+#convite-wrap {
+  min-height: 100%;
+  background: linear-gradient(160deg, #f5e8f5 0%, #ede0f5 40%, #fdf0fa 70%, #fef6ee 100%);
+  display: flex; justify-content: center; align-items: flex-start;
+  padding: 40px 16px 60px; opacity: 0; transition: opacity 0.8s 0.3s ease;
+}
+#convite-wrap.visivel { opacity: 1; }
+
+#butterfly-canvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 999;
+}
+
+.convite {
+  width: 100%; max-width: 560px;
+  background: linear-gradient(160deg, #fdf6f0 0%, #faf0e6 40%, #f5e8f5 80%, #ede0f5 100%);
+  border-radius: 28px; overflow: hidden;
+  box-shadow: 0 12px 60px rgba(120,60,180,0.18), 0 2px 16px rgba(120,60,180,0.08);
+  transform: translateY(22px); transition: transform 0.9s cubic-bezier(0.22,1,0.36,1) 0.4s;
+}
+#convite-wrap.visivel .convite { transform: translateY(0); }
+
+.header-bg {
+  width: 100%; height: 240px; position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #b87fd4 0%, #d4a0d8 30%, #f0c8e8 60%, #fde3c8 85%, #fef0d0 100%);
+}
+.header-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.title-area {
+  position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 36px 24px;
+  background: linear-gradient(to top, rgba(253,246,240,0.96) 55%, transparent);
+}
+.pre-title {
+  font-weight: 300; font-style: italic; font-size: 13px; letter-spacing: 3px;
+  color: #9b6fa8; text-transform: uppercase; margin-bottom: 6px;
+}
+.main-title {
+  font-family: 'Playfair Display', serif; font-weight: 700;
+  font-size: 44px; line-height: 1.0; color: #5a2d82; letter-spacing: -0.5px;
+}
+.main-title em { font-style: italic; color: #8b4ab8; }
+
+.body { padding: 30px 36px 36px; }
+.divider {
+  width: 64px; height: 1.5px;
+  background: linear-gradient(to right, #c9a0dc, #f7cfe8, transparent); margin-bottom: 22px;
+}
+.intro-text {
+  font-size: 17.5px; font-weight: 300; font-style: italic;
+  color: #6d4c88; line-height: 1.75; margin-bottom: 28px;
+}
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+.info-card {
+  background: rgba(201,160,220,0.13); border: 1px solid rgba(201,160,220,0.38);
+  border-radius: 16px; padding: 16px 20px;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.info-card:hover { background: rgba(201,160,220,0.22); box-shadow: 0 4px 18px rgba(140,60,200,0.1); }
+.info-card.full { grid-column: 1 / -1; }
+.info-label {
+  font-weight: 300; font-style: italic; font-size: 11px; letter-spacing: 2.5px;
+  text-transform: uppercase; color: #b07ac8; margin-bottom: 6px;
+}
+.info-value { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 19px; color: #4a1d72; line-height: 1.2; }
+.info-value small { display: block; font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 300; color: #8b5aaa; margin-top: 3px; }
+
+.music-card {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(201,160,220,0.13); border: 1px solid rgba(201,160,220,0.38);
+  border-radius: 16px; padding: 14px 18px; margin-bottom: 22px;
+}
+.music-icon { font-size: 26px; flex-shrink: 0; animation: noteFloat 2s ease-in-out infinite; }
+@keyframes noteFloat {
+  0%,100% { transform: translateY(0) rotate(-5deg); }
+  50%      { transform: translateY(-4px) rotate(5deg); }
+}
+.music-info { flex: 1; }
+.music-title { font-family: 'Playfair Display', serif; font-size: 16px; color: #4a1d72; }
+.music-artist { font-size: 12.5px; font-style: italic; color: #8b5aaa; margin-top: 2px; }
+.music-status { display: flex; align-items: center; gap: 6px; font-size: 12px; font-style: italic; color: #b07ac8; }
+.music-dot { width: 7px; height: 7px; border-radius: 50%; background: #b07ac8; animation: blink 1.2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+
+.butterfly-row { display: flex; justify-content: center; align-items: center; gap: 12px; margin: 4px 0 22px; }
+.b-icon { display: inline-block; }
+.b-icon:nth-child(1) { animation: flutter1 3.2s ease-in-out infinite; }
+.b-icon:nth-child(2) { animation: flutter2 2.6s ease-in-out infinite; }
+.b-icon:nth-child(3) { animation: flutter3 3.8s ease-in-out infinite; }
+.b-icon:nth-child(4) { animation: flutter1 2.9s ease-in-out infinite; }
+@keyframes flutter1 { 0%,100%{transform:rotate(-7deg) translateY(0);} 50%{transform:rotate(7deg) translateY(-5px);} }
+@keyframes flutter2 { 0%,100%{transform:rotate(5deg) translateY(-3px) scale(1.05);} 50%{transform:rotate(-5deg) translateY(3px) scale(0.96);} }
+@keyframes flutter3 { 0%,100%{transform:rotate(-4deg) translateY(2px);} 50%{transform:rotate(9deg) translateY(-6px);} }
+
+.footer-msg {
+  text-align: center; font-size: 15.5px; font-style: italic; font-weight: 300;
+  color: #8b6aaa; line-height: 1.7; padding-top: 18px;
+  border-top: 1px solid rgba(201,160,220,0.35);
+}
+.footer-msg strong {
+  display: block; margin-top: 10px; font-weight: 400; font-style: normal;
+  color: #5a2d82; font-family: 'Playfair Display', serif; font-size: 17px; letter-spacing: 0.3px;
+}
+
+#music-btn {
+  position: fixed; bottom: 24px; right: 24px; width: 46px; height: 46px;
+  border-radius: 50%; background: rgba(138,74,184,0.88);
+  display: none; align-items: center; justify-content: center;
+  font-size: 20px; cursor: pointer; z-index: 1000;
+  box-shadow: 0 4px 18px rgba(90,45,130,0.35);
+  transition: transform 0.2s, background 0.2s; user-select: none;
+}
+#music-btn:hover { transform: scale(1.1); background: rgba(106,42,154,0.95); }
+#music-btn.muted { opacity: 0.55; }
+
+@media (max-width: 480px) {
+  #convite-wrap { padding: 20px 10px 40px; }
+  .main-title { font-size: 34px; }
+  .body { padding: 22px 22px 28px; }
+  .title-area { padding: 16px 22px 18px; }
+  .header-bg { height: 210px; }
+  .info-value { font-size: 17px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TELA DE ENTRADA ══ -->
+<div id="entrada">
+  <canvas id="entrada-canvas"></canvas>
+  <div class="entrada-content">
+    <p class="entrada-nome">você tem um convite especial</p>
+    <h1 class="entrada-titulo"><em>Livre</em><br>para Voar</h1>
+    <p class="entrada-sub">Aniversário de Simone Aguiar · 27 de Junho</p>
+    <button class="btn-abrir" onclick="abrirConvite()">
+      <svg viewBox="0 0 40 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20,14 C18,3 1,0 0,7 C-1,14 7,19 14,16 C17,15 19,14 20,14Z" fill="rgba(255,255,255,0.88)"/>
+        <path d="M20,14 C18,19 4,26 2,22 C0,18 7,16 14,16 C17,16.5 19,15 20,14Z" fill="rgba(255,200,255,0.72)"/>
+        <path d="M20,14 C22,3 39,0 40,7 C41,14 33,19 26,16 C23,15 21,14 20,14Z" fill="rgba(255,255,255,0.88)"/>
+        <path d="M20,14 C22,19 36,26 38,22 C40,18 33,16 26,16 C23,16.5 21,15 20,14Z" fill="rgba(255,200,255,0.72)"/>
+        <ellipse cx="20" cy="15" rx="1.5" ry="9" fill="rgba(150,50,200,0.65)"/>
+      </svg>
+      Abrir meu convite
+    </button>
+  </div>
+  <p class="entrada-rodape">toque para revelar · com música 🎵</p>
+</div>
+
+<!-- ══ CONVITE ══ -->
+<div id="convite-wrap">
+  <canvas id="butterfly-canvas"></canvas>
+  <div id="music-btn" title="Música">🎵</div>
+  <audio id="audio-music" loop preload="auto">
+    <source src="musica.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="convite">
+    <div class="header-bg">
+      <svg class="header-svg" viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="70" cy="45" rx="60" ry="32" fill="rgba(255,255,255,0.17)" transform="rotate(-20 70 45)"/>
+        <ellipse cx="490" cy="65" rx="65" ry="30" fill="rgba(255,255,255,0.12)" transform="rotate(15 490 65)"/>
+        <ellipse cx="280" cy="200" rx="190" ry="48" fill="rgba(255,255,255,0.09)"/>
+        <g transform="translate(268,62)">
+          <path d="M0,0 C-10,-28 -60,-44 -68,-20 C-74,5 -50,24 -22,20 C-9,18 -2,10 0,0Z" fill="rgba(130,50,175,0.82)"/>
+          <path d="M0,0 C-9,11 -44,30 -52,55 C-58,74 -38,78 -20,62 C-8,53 -2,32 0,0Z" fill="rgba(155,72,198,0.72)"/>
+          <path d="M0,0 C10,-28 60,-44 68,-20 C74,5 50,24 22,20 C9,18 2,10 0,0Z" fill="rgba(130,50,175,0.82)"/>
+          <path d="M0,0 C9,11 44,30 52,55 C58,74 38,78 20,62 C8,53 2,32 0,0Z" fill="rgba(155,72,198,0.72)"/>
+          <circle cx="-38" cy="-11" r="7" fill="rgba(255,215,255,0.52)"/>
+          <circle cx="38" cy="-11" r="7" fill="rgba(255,215,255,0.52)"/>
+          <ellipse cx="0" cy="12" rx="3.2" ry="20" fill="rgba(70,15,95,0.68)"/>
+          <line x1="0" y1="-6" x2="-14" y2="-34" stroke="rgba(70,15,95,0.58)" stroke-width="1.3"/>
+          <circle cx="-14" cy="-34" r="2.2" fill="rgba(70,15,95,0.58)"/>
+          <line x1="0" y1="-6" x2="14" y2="-34" stroke="rgba(70,15,95,0.58)" stroke-width="1.3"/>
+          <circle cx="14" cy="-34" r="2.2" fill="rgba(70,15,95,0.58)"/>
+        </g>
+        <g transform="translate(95,75)">
+          <path d="M0,0 C-5,-15 -30,-22 -32,-11 C-34,2 -23,11 -11,9 C-4,7.5 -1,4 0,0Z" fill="rgba(215,130,195,0.78)"/>
+          <path d="M0,0 C-4,6.5 -21,17 -24,28 C-27,36 -17,38 -9,30 C-4,25 -1,15 0,0Z" fill="rgba(228,152,210,0.68)"/>
+          <path d="M0,0 C5,-15 30,-22 32,-11 C34,2 23,11 11,9 C4,7.5 1,4 0,0Z" fill="rgba(215,130,195,0.78)"/>
+          <path d="M0,0 C4,6.5 21,17 24,28 C27,36 17,38 9,30 C4,25 1,15 0,0Z" fill="rgba(228,152,210,0.68)"/>
+          <ellipse cx="0" cy="6.5" rx="2" ry="11" fill="rgba(110,35,135,0.58)"/>
+        </g>
+        <g transform="translate(452,88)">
+          <path d="M0,0 C-5,-17 -34,-24 -36,-11 C-38,3 -25,13 -12,10 C-5,8.5 -1,4.5 0,0Z" fill="rgba(190,110,238,0.72)"/>
+          <path d="M0,0 C-4,7.5 -23,19 -27,32 C-30,42 -19,44 -10,34 C-4,28 -1,17 0,0Z" fill="rgba(208,132,245,0.62)"/>
+          <path d="M0,0 C5,-17 34,-24 36,-11 C38,3 25,13 12,10 C5,8.5 1,4.5 0,0Z" fill="rgba(190,110,238,0.72)"/>
+          <path d="M0,0 C4,7.5 23,19 27,32 C30,42 19,44 10,34 C4,28 1,17 0,0Z" fill="rgba(208,132,245,0.62)"/>
+          <ellipse cx="0" cy="7" rx="2.2" ry="12" fill="rgba(90,18,130,0.52)"/>
+        </g>
+        <circle cx="175" cy="32" r="3.2" fill="rgba(255,255,255,0.38)"/>
+        <circle cx="385" cy="50" r="2.6" fill="rgba(255,255,255,0.32)"/>
+        <circle cx="330" cy="26" r="2" fill="rgba(255,255,255,0.42)"/>
+      </svg>
+      <div class="title-area">
+        <p class="pre-title">aniversário de Simone Aguiar</p>
+        <h1 class="main-title"><em>Livre</em> para Voar</h1>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="divider"></div>
+      <p class="intro-text">
+        Simone Aguiar celebra mais um ano de vida<br>com a leveza e a graça de uma borboleta.<br>
+        Venha festejar esse momento especial conosco!
+      </p>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-label">Data</div>
+          <div class="info-value">27 de Junho<small>Sábado · 2026</small></div>
+        </div>
+        <div class="info-card">
+          <div class="info-label">Horário</div>
+          <div class="info-value">12h00<small>ao meio-dia</small></div>
+        </div>
+        <div class="info-card full">
+          <div class="info-label">Local</div>
+          <div class="info-value">Rua Werner Goldberg, 157<small>Churrasqueira 1</small></div>
+        </div>
+      </div>
+
+      <div class="music-card">
+        <div class="music-icon">🎵</div>
+        <div class="music-info">
+          <div class="music-title">Livre para Voar</div>
+          <div class="music-artist">DJ Claudinho Brasil</div>
+        </div>
+        <div class="music-status"><div class="music-dot"></div> tocando</div>
+      </div>
+
+      <div class="butterfly-row">
+        <span class="b-icon"><svg width="34" height="25" viewBox="0 0 34 25" xmlns="http://www.w3.org/2000/svg"><path d="M17,12 C15,2.5 1,0 0,6 C-1,12 6,16 12,14 C14.5,13 16,12 17,12Z" fill="#c9a0dc"/><path d="M17,12 C15,16 4,23 2,20 C0,17 6,13.5 12,14 C14.5,14.5 16,13 17,12Z" fill="#dbb0e8"/><path d="M17,12 C19,2.5 33,0 34,6 C35,12 28,16 22,14 C19.5,13 18,12 17,12Z" fill="#c9a0dc"/><path d="M17,12 C19,16 30,23 32,20 C34,17 28,13.5 22,14 C19.5,14.5 18,13 17,12Z" fill="#dbb0e8"/><ellipse cx="17" cy="13" rx="1.4" ry="8" fill="#7a3a9a"/></svg></span>
+        <span class="b-icon"><svg width="28" height="20" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><path d="M14,10 C12,2 1,0 0,5 C-1,10 5,13.5 10,11.5 C12,10.8 13,10 14,10Z" fill="#e8b4d8"/><path d="M14,10 C12,13.5 3.5,19 2,16 C0.5,13 5,11 10,11.5 C12,12 13,11 14,10Z" fill="#f0c8e8"/><path d="M14,10 C16,2 27,0 28,5 C29,10 23,13.5 18,11.5 C16,10.8 15,10 14,10Z" fill="#e8b4d8"/><path d="M14,10 C16,13.5 24.5,19 26,16 C27.5,13 23,11 18,11.5 C16,12 15,11 14,10Z" fill="#f0c8e8"/><ellipse cx="14" cy="11" rx="1.2" ry="6.5" fill="#8a3a7a"/></svg></span>
+        <span class="b-icon"><svg width="34" height="25" viewBox="0 0 34 25" xmlns="http://www.w3.org/2000/svg"><path d="M17,12 C15,2.5 1,0 0,6 C-1,12 6,16 12,14 C14.5,13 16,12 17,12Z" fill="#b890d0"/><path d="M17,12 C15,16 4,23 2,20 C0,17 6,13.5 12,14 C14.5,14.5 16,13 17,12Z" fill="#caa8e0"/><path d="M17,12 C19,2.5 33,0 34,6 C35,12 28,16 22,14 C19.5,13 18,12 17,12Z" fill="#b890d0"/><path d="M17,12 C19,16 30,23 32,20 C34,17 28,13.5 22,14 C19.5,14.5 18,13 17,12Z" fill="#caa8e0"/><ellipse cx="17" cy="13" rx="1.4" ry="8" fill="#6a2a8a"/></svg></span>
+        <span class="b-icon"><svg width="28" height="20" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><path d="M14,10 C12,2 1,0 0,5 C-1,10 5,13.5 10,11.5 C12,10.8 13,10 14,10Z" fill="#e0a8f8"/><path d="M14,10 C12,13.5 3.5,19 2,16 C0.5,13 5,11 10,11.5 C12,12 13,11 14,10Z" fill="#eed0ff"/><path d="M14,10 C16,2 27,0 28,5 C29,10 23,13.5 18,11.5 C16,10.8 15,10 14,10Z" fill="#e0a8f8"/><path d="M14,10 C16,13.5 24.5,19 26,16 C27.5,13 23,11 18,11.5 C16,12 15,11 14,10Z" fill="#eed0ff"/><ellipse cx="14" cy="11" rx="1.2" ry="6.5" fill="#7a2a9a"/></svg></span>
+      </div>
+
+      <p class="footer-msg">
+        Como a borboleta que rompe o casulo e alça voo,<br>
+        celebramos juntos mais um ano lindo de Simone.
+        <strong>Confirme sua presença · Te esperamos! 🦋</strong>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ ABRIR CONVITE ══
+function abrirConvite() {
+  const audio = document.getElementById('audio-music');
+  audio.play();
+
+  const entrada = document.getElementById('entrada');
+  entrada.classList.add('saindo');
+  document.getElementById('convite-wrap').classList.add('visivel');
+
+  setTimeout(() => {
+    entrada.style.display = 'none';
+    entradaOk = false;
+    document.getElementById('music-btn').style.display = 'flex';
+    iniciarBorboletas();
+  }, 950);
+}
+
+// ══ BOTÃO MÚSICA ══
+let muted = false;
+document.getElementById('music-btn').addEventListener('click', () => {
+  const audio = document.getElementById('audio-music');
+  muted = !muted;
+  const btn = document.getElementById('music-btn');
+  btn.textContent = muted ? '🔇' : '🎵';
+  btn.classList.toggle('muted', muted);
+  audio.muted = muted;
+});
+const ec = document.getElementById('entrada-canvas');
+const ectx = ec.getContext('2d');
+function resizeEC() { ec.width = window.innerWidth; ec.height = window.innerHeight; }
+resizeEC(); window.addEventListener('resize', resizeEC);
+
+const EC_COLORS = [
+  ['rgba(255,200,255,0.7)','rgba(220,140,255,0.5)'],
+  ['rgba(255,255,255,0.6)','rgba(200,160,255,0.45)'],
+  ['rgba(240,180,255,0.65)','rgba(180,100,240,0.45)'],
+  ['rgba(255,220,240,0.6)','rgba(200,120,220,0.45)'],
+];
+
+class EB {
+  constructor() { this.init(true); }
+  init(first) {
+    this.x = Math.random() * ec.width;
+    this.y = first ? (Math.random() * ec.height) : ec.height + 20;
+    this.vy = -(0.5 + Math.random() * 0.9);
+    this.vx = (Math.random() - 0.5) * 0.45;
+    this.size = 7 + Math.random() * 15;
+    this.flutter = Math.random() * Math.PI * 2;
+    this.fSpeed = 0.035 + Math.random() * 0.04;
+    this.wobble = 0; this.wobbleS = 0.02 + Math.random() * 0.01;
+    this.ci = Math.floor(Math.random() * EC_COLORS.length);
+    this.alpha = first ? (0.3 + Math.random() * 0.7) : 0;
+    this.age = first ? Math.floor(Math.random() * 80) : 0;
+    this.maxAge = 180 + Math.random() * 140;
+  }
+  draw() {
+    this.age++;
+    if (this.age > this.maxAge) { this.init(false); return; }
+    if (this.age < 20) this.alpha = Math.min(0.9, this.age / 20);
+    else if (this.age > this.maxAge - 25) this.alpha = Math.max(0, (this.maxAge - this.age) / 25);
+    this.flutter += this.fSpeed; this.wobble += this.wobbleS;
+    this.x += this.vx + Math.sin(this.wobble) * 0.45; this.y += this.vy;
+    const wx = Math.abs(Math.sin(this.flutter)), s = this.size;
+    const [c1,c2] = EC_COLORS[this.ci];
+    ectx.save(); ectx.translate(this.x, this.y); ectx.globalAlpha = this.alpha * 0.75;
+    ectx.save(); ectx.scale(-wx,1);
+    ectx.beginPath(); ectx.moveTo(0,0);
+    ectx.bezierCurveTo(-s*.15,-s*.6,-s*1.1,-s*.8,-s*1.15,-s*.3);
+    ectx.bezierCurveTo(-s*1.18,s*.05,-s*.6,s*.35,0,0);
+    ectx.fillStyle=c1; ectx.fill();
+    ectx.beginPath(); ectx.moveTo(0,0);
+    ectx.bezierCurveTo(-s*.12,s*.2,-s*.85,s*.55,-s*.9,s*1.0);
+    ectx.bezierCurveTo(-s*.92,s*1.3,-s*.5,s*1.35,-s*.2,s*1.05);
+    ectx.bezierCurveTo(-s*.08,s*.6,0,s*.3,0,0);
+    ectx.fillStyle=c2; ectx.fill(); ectx.restore();
+    ectx.save(); ectx.scale(wx,1);
+    ectx.beginPath(); ectx.moveTo(0,0);
+    ectx.bezierCurveTo(s*.15,-s*.6,s*1.1,-s*.8,s*1.15,-s*.3);
+    ectx.bezierCurveTo(s*1.18,s*.05,s*.6,s*.35,0,0);
+    ectx.fillStyle=c1; ectx.fill();
+    ectx.beginPath(); ectx.moveTo(0,0);
+    ectx.bezierCurveTo(s*.12,s*.2,s*.85,s*.55,s*.9,s*1.0);
+    ectx.bezierCurveTo(s*.92,s*1.3,s*.5,s*1.35,s*.2,s*1.05);
+    ectx.bezierCurveTo(s*.08,s*.6,0,s*.3,0,0);
+    ectx.fillStyle=c2; ectx.fill(); ectx.restore();
+    ectx.restore();
+  }
+}
+
+const ebflies = Array.from({length:20}, () => new EB());
+let entradaOk = true;
+(function animEC() {
+  if (!entradaOk) return;
+  ectx.clearRect(0,0,ec.width,ec.height);
+  ebflies.forEach(b => b.draw());
+  requestAnimationFrame(animEC);
+})();
+
+// ══ ABRIR CONVITE ══
+function abrirConvite() {
+  const audio = document.getElementById('audio-music');
+  audio.play();
+
+// ══ 48 BORBOLETAS ══
+function iniciarBorboletas() {
+  const canvas = document.getElementById('butterfly-canvas');
+  const ctx = canvas.getContext('2d');
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  const COLORS = [
+    ['#c9a0dc','#a070c0'],['#e8b4d8','#c880b8'],['#b890d0','#9060b0'],
+    ['#f0c8e8','#d890c8'],['#dbb0e8','#b880d0'],['#e0a8f8','#c068e0'],['#f8d0f0','#d898d8'],
+  ];
+
+  class BF {
+    constructor(delay) { this.reset(true, delay); }
+    reset(init, delay) {
+      this.born = performance.now() + (delay||0);
+      this.x = Math.random() * canvas.width;
+      this.y = init ? (Math.random() * canvas.height) : canvas.height + 30;
+      this.vy = -(1.2 + Math.random() * 1.4); this.vx = (Math.random()-.5)*.8;
+      this.size = 14 + Math.random()*22; this.flutter = Math.random()*Math.PI*2;
+      this.fSpeed = .04 + Math.random()*.05; this.wobble = 0; this.wobbleS = .018 + Math.random()*.014;
+      this.ci = Math.floor(Math.random()*COLORS.length); this.alpha = 0; this.alive = true;
+      this.age = 0; this.maxAge = 280 + Math.random()*200;
+      this.rot = (Math.random()-.5)*.3; this.rotS = (Math.random()-.5)*.004;
+    }
+    draw(now) {
+      if (now < this.born) return;
+      this.age++; if (this.age > this.maxAge) { this.alive=false; return; }
+      if (this.age<30) this.alpha = Math.min(1,this.age/30);
+      else if (this.age > this.maxAge-40) this.alpha = Math.max(0,(this.maxAge-this.age)/40);
+      this.flutter+=this.fSpeed; this.wobble+=this.wobbleS; this.rot+=this.rotS;
+      this.x += this.vx + Math.sin(this.wobble)*.6; this.y += this.vy;
+      const wx=Math.abs(Math.sin(this.flutter)), s=this.size, [c1,c2]=COLORS[this.ci];
+      ctx.save(); ctx.translate(this.x,this.y); ctx.rotate(this.rot); ctx.globalAlpha=this.alpha*.88;
+      ctx.save(); ctx.scale(-wx,1);
+      ctx.beginPath(); ctx.moveTo(0,0);
+      ctx.bezierCurveTo(-s*.15,-s*.6,-s*1.1,-s*.8,-s*1.15,-s*.3);
+      ctx.bezierCurveTo(-s*1.18,s*.05,-s*.6,s*.35,0,0);
+      ctx.fillStyle=c1; ctx.globalAlpha=this.alpha*.82; ctx.fill();
+      ctx.beginPath(); ctx.moveTo(0,0);
+      ctx.bezierCurveTo(-s*.12,s*.2,-s*.85,s*.55,-s*.9,s*1.0);
+      ctx.bezierCurveTo(-s*.92,s*1.3,-s*.5,s*1.35,-s*.2,s*1.05);
+      ctx.bezierCurveTo(-s*.08,s*.6,0,s*.3,0,0);
+      ctx.fillStyle=c2; ctx.globalAlpha=this.alpha*.7; ctx.fill(); ctx.restore();
+      ctx.save(); ctx.scale(wx,1);
+      ctx.beginPath(); ctx.moveTo(0,0);
+      ctx.bezierCurveTo(s*.15,-s*.6,s*1.1,-s*.8,s*1.15,-s*.3);
+      ctx.bezierCurveTo(s*1.18,s*.05,s*.6,s*.35,0,0);
+      ctx.fillStyle=c1; ctx.globalAlpha=this.alpha*.82; ctx.fill();
+      ctx.beginPath(); ctx.moveTo(0,0);
+      ctx.bezierCurveTo(s*.12,s*.2,s*.85,s*.55,s*.9,s*1.0);
+      ctx.bezierCurveTo(s*.92,s*1.3,s*.5,s*1.35,s*.2,s*1.05);
+      ctx.bezierCurveTo(s*.08,s*.6,0,s*.3,0,0);
+      ctx.fillStyle=c2; ctx.globalAlpha=this.alpha*.7; ctx.fill(); ctx.restore();
+      ctx.beginPath(); ctx.ellipse(0,s*.25,s*.06,s*.38,0,0,Math.PI*2);
+      ctx.fillStyle='rgba(60,15,80,0.55)'; ctx.globalAlpha=this.alpha*.55; ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  const bflies = Array.from({length:48}, (_,i) => new BF(i*60));
+  const t0 = performance.now();
+  (function anim(now) {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let done = true;
+    bflies.forEach(b => {
+      if (!b.alive) {
+        if (now-t0 < 8000) { b.reset(false,0); b.born=now+Math.random()*400; b.alive=true; }
+        return;
+      }
+      done=false; b.draw(now);
+    });
+    if (now-t0>10000 && done) return;
+    requestAnimationFrame(anim);
+  })();
+}
+</script>
+</body>
+</html>
